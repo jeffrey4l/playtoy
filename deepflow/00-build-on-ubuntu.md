@@ -22,6 +22,13 @@ ln -s compat/linux linux
 install 
 
 ```bash
+# bcc
+wget https://github.com/iovisor/bcc/releases/download/v0.25.0/bcc-src-with-submodule.tar.gz
+tar -xzf bcc-src-with-submodule.tar.gz
+mkdir -p bcc/build && cd bcc/build && cmake .. && make && make install
+ln -s /usr/lib/x86_64-linux-gnu/libbcc_bpf.a /usr/lib64/
+
+
 # bddisasm
 git clone https://github.com/bitdefender/bddisasm
 cd bddisasm
@@ -52,11 +59,14 @@ mkdir -p libpcap/build ; cd libpcap/build
 cmake ../ -DDISABLE_DBUS=1
 make install 
 ln -s /usr/local/lib/libpcap.a /usr/lib/x86_64-linux-gnu/libpcap.a
+
+# build libelf.a
+# ubuntu 的 libelf-dev 带
 ```
 
 build deepflow
 
-```
+```bash
 apt install cargo protobuf-compiler libpcap-dev clang llvm musl-tools
 apt install openjdk-18-jdk 
 ln -s /usr/lib/jvm/java-18-openjdk-amd64 /usr/lib/jvm/java
@@ -64,3 +74,6 @@ ln -s /usr/lib/jvm/java-18-openjdk-amd64 /usr/lib/jvm/java
 git clone --recursive https://github.com/deepflowio/deepflow.git
 ```
 
+# REF
+
+* [完整指南：如何编译、打包和部署二次开发的 DeepFlow](https://mp.weixin.qq.com/s/-jWYq2rTRaTueuN0sAb3lA)
