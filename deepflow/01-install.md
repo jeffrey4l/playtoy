@@ -5,10 +5,31 @@
 * Flow: DeepFlow Agent 会维护每个 TCP 连接、每个应用协议 Request 的会话状态，称之为 
 * vTap: 应该就是和 deepflow-agent 是1:1 对应的
 
+
+
+# install
+
+```bash
+helm repo add deepflow https://deepflowio.github.io/deepflow
+helm repo search deepflow
+helm search repo -l  deepflow/deepflow
+
+cat << EOF > values-custom.yaml
+global:
+  allInOneLocalStorage: true
+EOF
+
+helm install deepflow -n deepflow deepflow/deepflow --create-namespace   -f values-custom.yaml
+```
+
+```
+```
+
+
+
 # listen port
 
 server:
-
 * controller: 20417
 * grpc_port: 20035
 * querier: 20416
@@ -60,10 +81,26 @@ agent 的子进程
 
 # server api
 
-* [debug info](https://github.com/deepflowio/deepflow/blob/main/server/controller/http/router/debug.go#L39-L57)
+* debug apis
+  * https://github.com/deepflowio/deepflow/blob/main/server/controller/http/router/debug.go#L39-L57)
+
 
 ```
-ip=10.224.0.26:20417
+ip=deepflow-server.deepflow:20417
 curl $ip/v1/agent-stats/10.3.0.91/
 ```
 
+```
+task: 算是一个抓取元数据的业务
+```
+
+
+
+# REF
+
+* https://mp.weixin.qq.com/s/GvUwamT-1VYHZQW34JBdow
+
+```
+deepflow-ctl 是个 server 的 client 和上面的
+./deepflow-ctl --api-port 20417 agent list
+```

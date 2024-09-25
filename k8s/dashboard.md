@@ -31,8 +31,10 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 
 ```bash
 V=v3.4.0
-kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/$V/kubesphere-installer.yaml
+kubectl apply -f \
+  https://github.com/kubesphere/ks-installer/releases/download/$V/kubesphere-installer.yaml
 
-kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/$V/cluster-configuration.yaml
+kubectl apply -f \
+  https://github.com/kubesphere/ks-installer/releases/download/$V/cluster-configuration.yaml
 ```
 

@@ -5,7 +5,7 @@ install bcc
 ```bash
 sudo apt install -y bison build-essential cmake flex git libedit-dev \
 	libllvm14 llvm-14-dev libclang-14-dev python3 zlib1g-dev \
-	libelf-dev libfl-dev python3-distutils \
+	libelf-dev python3-distutils \
 	arping netperf iperf3
 
 git clone https://github.com/iovisor/bcc
@@ -77,3 +77,18 @@ git clone --recursive https://github.com/deepflowio/deepflow.git
 # REF
 
 * [完整指南：如何编译、打包和部署二次开发的 DeepFlow](https://mp.weixin.qq.com/s/-jWYq2rTRaTueuN0sAb3lA)
+* [DeepFlow 扩展协议解析实践](https://mp.weixin.qq.com/s/GvUwamT-1VYHZQW34JBdow)
+
+# build server
+
+```bash
+# on archlinux
+yaourt -S python3-ujson
+go install github.com/benbjohnson/tmpl@v1.1.0
+
+
+make server BINARY_SUFFIX=.amd64
+
+docker build .
+```
+

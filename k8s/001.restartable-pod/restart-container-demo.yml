@@ -1,0 +1,96 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rsync-script
+data:
+  run.sh: |-
+    #!/bin/sh
+    if [[ ! -f /new_root/done ]]; then
+      apk add rsync
+      cd /
+      echo "start save root file"
+      rsync -aAXv --exclude=/dev --exclude=/proc --exclude=/sys --exclude=/new_root --exclude=/tmp / /new_root
+      touch /new_root/done
+      echo "done save root file"
+    else
+      echo "skip copy root"
+    fi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: echoserver-root
+spec:
+  storageClassName: openebs-hostpath
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoserver
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: echoserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: echoserver
+    spec:
+      volumes:
+        - name: copy-root
+          configMap:
+            name: rsync-script
+        - name: fake-root
+          persistentVolumeClaim:
+            claimName: echoserver-root
+      initContainers:
+        - name: copy-root
+          image: ealen/echo-server:latest
+          imagePullPolicy: IfNotPresent
+          command: [ sh, /tmp/bin/run.sh]
+          volumeMounts:
+            - { name: copy-root, mountPath: /tmp/bin }
+            - { name: fake-root, mountPath: /new_root }
+      containers:
+        - name: echoserver
+          image: ealen/echo-server:latest
+          env:
+            - { name: PORT, value: "8080" }
+          volumeMounts:
+            - { name: fake-root, mountPath: /usr,  subPath: usr  }
+            - { name: fake-root, mountPath: /etc,  subPath: etc  }
+            - { name: fake-root, mountPath: /var,  subPath: var  }
+            - { name: fake-root, mountPath: /root, subPath: root }
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /
+            initialDelaySeconds: 10
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoserver
+spec:
+  ports:
+    - { name: http, port: 8080, targetPort: 8080 }
+  selector:
+    app: echoserver

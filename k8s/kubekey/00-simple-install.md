@@ -17,7 +17,7 @@ yum install -y conntrack socat ebtables ipset ipvsadm
 > * https://github.com/kubesphere/kubekey/blob/master/api/v1beta1/kkcluster_types.go
 > * https://github.com/kubesphere/kubekey/blob/release-2.2/docs/config-example.md
 
-```
+```bash
 ip1=10.3.0.91
 ip2=10.3.0.92
 ip3=10.3.0.93
