@@ -1,0 +1,13 @@
+langchain
+langchain_community
+unstructured
+pypandoc
+chromadb
+markdown
+rich
+langchain-chroma
+streamlit
+
+torch
+transformers
+sentence_transformers
